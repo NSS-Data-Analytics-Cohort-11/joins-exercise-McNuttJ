@@ -49,15 +49,39 @@ LIMIT 5;
 --Answer: Walt Disney, Sony Pictures, Lionsgate, DreamWorks, Warner Bros.
 
 --Question 6. How many movies in the dataset are distributed by a company which is not headquartered in California? Which of these movies has the highest imdb rating?
-SELECT COUNT(specs.*), rating.imdb_rating
+SELECT specs.film_title, rating.imdb_rating
 FROM specs
 INNER JOIN distributors
 	ON specs.domestic_distributor_id = distributors.distributor_id
 INNER JOIN rating
 	ON specs.movie_id = rating.movie_id
 WHERE distributors.headquarters NOT IN ('CA')
-GROUP BY imdb_rating;
---Need more columns pulled and maybe consider Self JOIN???
+ORDER BY rating.imdb_rating DESC;
+--Answer 419 movies are distributed by a company not headquartered in California. The Dark Knight has the highest IMDB rating.
+
+--Question 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
+SELECT AVG(imdb_rating)
+FROM rating
+INNER JOIN specs
+	ON rating.movie_id = specs.movie_id
+GROUP BY
+(CASE
+	WHEN specs.length_in_min > 120 THEN 'OVER 2 Hours'
+	WHEN specs.length_in_min < 120 THEN 'UNDER 2 Hours'
+	ELSE)
+
+
+
+SELECT specs_left.length_in_min, rating_left.imdb_rating, specs_right.length_in_min, rating_left.imdb_rating
+FROM specs AS specs_left
+INNER JOIN specs AS specs_right
+	ON specs_left.movie_id = specs_right.movie_id
+INNER JOIN rating AS rating_left
+	ON specs_left.movie_id = rating_left.movie_id
+INNER JOIN rating AS rating_right
+	ON specs_right.movie_id = rating_right.movie_id
+WHERE specs_left.length_in_min > 180
+	
 
 
 
