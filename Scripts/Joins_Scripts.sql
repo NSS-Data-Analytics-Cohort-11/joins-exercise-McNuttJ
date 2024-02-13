@@ -70,9 +70,17 @@ INNER JOIN rating AS rating_right
 	ON specs_right.movie_id = rating_right.movie_id
 WHERE specs_left.length_in_min > 120
 --
-
-
-
+--Trying Case
+SELECT AVG(imdb_rating),
+	CASE 
+	WHEN length_in_min > 120 THEN 'Over Two Hours'
+	WHEN length_in_min < 120 THEN 'Under Two Hours'
+	END AS MovieLength
+FROM specs
+LEFT JOIN rating
+	ON specs.movie_id = rating.movie_id
+GROUP BY movielength;
+--Answer: Movies that are Over Two Hours have a higher average rating.
 
 
 	
