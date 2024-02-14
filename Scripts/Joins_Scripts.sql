@@ -55,8 +55,9 @@ INNER JOIN distributors
 	ON specs.domestic_distributor_id = distributors.distributor_id
 INNER JOIN rating
 	ON specs.movie_id = rating.movie_id
-WHERE distributors.headquarters NOT IN ('CA')
+WHERE distributors.headquarters NOT LIKE '%CA'
 ORDER BY rating.imdb_rating DESC;
+
 --Answer 419 movies are distributed by a company not headquartered in California. The Dark Knight has the highest IMDB rating.
 
 --Question 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
@@ -70,12 +71,13 @@ INNER JOIN rating AS rating_right
 	ON specs_right.movie_id = rating_right.movie_id
 WHERE specs_left.length_in_min > 120
 --
---Trying Case
+--Trying Case--worked!
 SELECT AVG(imdb_rating),
 	CASE 
 	WHEN length_in_min > 120 THEN 'Over Two Hours'
 	WHEN length_in_min < 120 THEN 'Under Two Hours'
-	END AS MovieLength
+	ELSE 'Exactly Two Hours'
+	END AS MovieLength, ROUND(AVG(imdb_rating),2)
 FROM specs
 LEFT JOIN rating
 	ON specs.movie_id = rating.movie_id
